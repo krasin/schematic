@@ -1,0 +1,5 @@
+This is a simple implementation of .schematic file reader.
+
+.schematic is the format used for representing voxel data in Minecraft.
+
+See http://www.minecraftwiki.net/wiki/Schematic_File_Format for more details.
