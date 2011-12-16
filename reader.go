@@ -34,8 +34,6 @@ func newNbtReader(r io.Reader) (nr *nbtReader, err os.Error) {
 	return &nbtReader{r: bufio.NewReader(rd)}, nil
 }
 
-type Tag int
-
 func (r *nbtReader) ReadString() (str string, err os.Error) {
 	var l int
 	if l, err = r.ReadShort(); err != nil {
