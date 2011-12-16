@@ -9,17 +9,17 @@ import (
 )
 
 const (
-	TAG_END        = 0
-	TAG_BYTE       = 1
-	TAG_SHORT      = 2
-	TAG_INT        = 3
-	TAG_LONG       = 4
-	TAG_FLOAT      = 5
-	TAG_DOUBLE     = 6
-	TAG_BYTE_ARRAY = 7
-	TAG_STRING     = 8
-	TAG_LIST       = 9
-	TAG_COMPOUND   = 10
+	tagEnd       = 0
+	tagByte      = 1
+	tagShort     = 2
+	tagInt       = 3
+	tagLong      = 4
+	tagFloat     = 5
+	tagDouble    = 6
+	tagByteArray = 7
+	tagString    = 8
+	tagList      = 9
+	tagCompound  = 10
 )
 
 type nbtReader struct {
@@ -78,7 +78,7 @@ func (r *nbtReader) ReadTagName() (typ byte, name string, err os.Error) {
 	if typ, err = r.r.ReadByte(); err != nil {
 		return
 	}
-	if typ == TAG_END {
+	if typ == tagEnd {
 		return
 	}
 	name, err = r.ReadString()
@@ -131,7 +131,7 @@ func (r *schematicReader) ReadEntity() (entity Entity, err os.Error) {
 		if typ, name, err = r.r.ReadTagName(); err != nil {
 			return
 		}
-		if typ == TAG_END {
+		if typ == tagEnd {
 			break
 		}
 		switch name {
@@ -149,10 +149,10 @@ func (r *schematicReader) ReadEntities() (entities []Entity, err os.Error) {
 		if typ, err = r.r.ReadTagTyp(); err != nil {
 			return
 		}
-		if typ == TAG_END {
+		if typ == tagEnd {
 			break
 		}
-		if typ == TAG_COMPOUND {
+		if typ == tagCompound {
 		}
 		var entity Entity
 		if entity, err = r.ReadEntity(); err != nil {
@@ -169,7 +169,7 @@ func (r *schematicReader) Parse() (s *Schematic, err os.Error) {
 	if typ, name, err = r.r.ReadTagName(); err != nil {
 		return
 	}
-	if typ != TAG_COMPOUND {
+	if typ != tagCompound {
 		return nil, fmt.Errorf("Top level tag must be compound. Got: %d", typ)
 	}
 	if name != "Schematic" {
@@ -180,7 +180,7 @@ func (r *schematicReader) Parse() (s *Schematic, err os.Error) {
 		if typ, name, err = r.r.ReadTagName(); err != nil {
 			return
 		}
-		if typ == TAG_END {
+		if typ == tagEnd {
 			break
 		}
 		switch name {
