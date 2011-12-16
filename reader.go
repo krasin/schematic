@@ -95,16 +95,16 @@ func (r *nbtReader) ReadByteArray() (data []byte, err os.Error) {
 	return
 }
 
-type SchematicReader struct {
+type schematicReader struct {
 	r *nbtReader
 }
 
-func NewSchematicReader(r io.Reader) (sr *SchematicReader, err os.Error) {
+func newSchematicReader(r io.Reader) (sr *schematicReader, err os.Error) {
 	var nr *nbtReader
 	if nr, err = newNbtReader(r); err != nil {
 		return
 	}
-	return &SchematicReader{r: nr}, nil
+	return &schematicReader{r: nr}, nil
 }
 
 type Entity struct {
@@ -124,7 +124,7 @@ type Schematic struct {
 	Entities  []Entity
 }
 
-func (r *SchematicReader) ReadEntity() (entity Entity, err os.Error) {
+func (r *schematicReader) ReadEntity() (entity Entity, err os.Error) {
 	for {
 		var typ byte
 		var name string
@@ -143,7 +143,7 @@ func (r *SchematicReader) ReadEntity() (entity Entity, err os.Error) {
 	return
 }
 
-func (r *SchematicReader) ReadEntities() (entities []Entity, err os.Error) {
+func (r *schematicReader) ReadEntities() (entities []Entity, err os.Error) {
 	for {
 		var typ byte
 		if typ, err = r.r.ReadTagTyp(); err != nil {
@@ -163,7 +163,7 @@ func (r *SchematicReader) ReadEntities() (entities []Entity, err os.Error) {
 	return
 }
 
-func (r *SchematicReader) Parse() (s *Schematic, err os.Error) {
+func (r *schematicReader) Parse() (s *Schematic, err os.Error) {
 	var typ byte
 	var name string
 	if typ, name, err = r.r.ReadTagName(); err != nil {
@@ -238,8 +238,8 @@ func (s *Schematic) Get(x, y, z int) bool {
 }
 
 func ReadSchematic(input io.Reader) (vol *Schematic, err os.Error) {
-	var r *SchematicReader
-	if r, err = NewSchematicReader(input); err != nil {
+	var r *schematicReader
+	if r, err = newSchematicReader(input); err != nil {
 		return
 	}
 	vol, err = r.Parse()
