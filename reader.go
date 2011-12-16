@@ -1,3 +1,6 @@
+// Copyright 2011 Ivan Krasin. All rights reserved.
+// Use of this source code is governed by
+// MIT license that can be found in the LICENSE file.
 package schematic
 
 import (
@@ -26,6 +29,7 @@ type Entity struct {
 	Id string
 }
 
+// A Schematic contains the data from .schematic file and is returned by ReadSchematic.
 type Schematic struct {
 	Width     int
 	Length    int
@@ -39,6 +43,7 @@ type Schematic struct {
 	Entities  []Entity
 }
 
+// ReadSchematic reads .schematic file from the input.
 func ReadSchematic(input io.Reader) (vol *Schematic, err os.Error) {
 	var r *schematicReader
 	if r, err = newSchematicReader(input); err != nil {
@@ -48,24 +53,33 @@ func ReadSchematic(input io.Reader) (vol *Schematic, err os.Error) {
 	return
 }
 
+// XLen is the number of blocks by X axis.
 func (s *Schematic) XLen() int {
 	return s.Width
 }
 
+// XLen is the number of blocks by Y axis.
 func (s *Schematic) YLen() int {
 	return s.Height
 }
 
+// XLen is the number of blocks by Z axis.
 func (s *Schematic) ZLen() int {
 	return s.Length
 }
 
+// Get reports whether the specified block is filled.
 func (s *Schematic) Get(x, y, z int) bool {
+	return s.GetV(x, y, z) != 0
+}
+
+// GetV returns the material of the specified block.
+func (s *Schematic) GetV(x, y, z int) uint16 {
 	if x < 0 || y < 0 || z < 0 || x >= s.XLen() || y >= s.YLen() || z >= s.ZLen() {
-		return false
+		return 0
 	}
 	index := y*s.XLen()*s.ZLen() + z*s.XLen() + x
-	return s.Blocks[index] != 0
+	return uint16(s.Blocks[index])
 }
 
 type schematicReader struct {
