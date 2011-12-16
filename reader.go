@@ -22,21 +22,21 @@ const (
 	TAG_COMPOUND   = 10
 )
 
-type NBTReader struct {
+type nbtReader struct {
 	r *bufio.Reader
 }
 
-func NewNBTReader(r io.Reader) (nr *NBTReader, err os.Error) {
+func newNbtReader(r io.Reader) (nr *nbtReader, err os.Error) {
 	var rd io.Reader
 	if rd, err = gzip.NewReader(r); err != nil {
 		return
 	}
-	return &NBTReader{r: bufio.NewReader(rd)}, nil
+	return &nbtReader{r: bufio.NewReader(rd)}, nil
 }
 
 type Tag int
 
-func (r *NBTReader) ReadString() (str string, err os.Error) {
+func (r *nbtReader) ReadString() (str string, err os.Error) {
 	var l int
 	if l, err = r.ReadShort(); err != nil {
 		return
@@ -48,7 +48,7 @@ func (r *NBTReader) ReadString() (str string, err os.Error) {
 	return string(data), nil
 }
 
-func (r *NBTReader) ReadShort() (val int, err os.Error) {
+func (r *nbtReader) ReadShort() (val int, err os.Error) {
 	buf := [2]byte{}
 	if _, err = io.ReadFull(r.r, buf[:]); err != nil {
 		return
@@ -57,7 +57,7 @@ func (r *NBTReader) ReadShort() (val int, err os.Error) {
 	return
 }
 
-func (r *NBTReader) ReadInt() (val int, err os.Error) {
+func (r *nbtReader) ReadInt() (val int, err os.Error) {
 	buf := [4]byte{}
 	if _, err = io.ReadFull(r.r, buf[:]); err != nil {
 		return
@@ -69,12 +69,12 @@ func (r *NBTReader) ReadInt() (val int, err os.Error) {
 	return
 }
 
-func (r *NBTReader) ReadTagTyp() (typ byte, err os.Error) {
+func (r *nbtReader) ReadTagTyp() (typ byte, err os.Error) {
 	typ, err = r.r.ReadByte()
 	return
 }
 
-func (r *NBTReader) ReadTagName() (typ byte, name string, err os.Error) {
+func (r *nbtReader) ReadTagName() (typ byte, name string, err os.Error) {
 	if typ, err = r.r.ReadByte(); err != nil {
 		return
 	}
@@ -85,7 +85,7 @@ func (r *NBTReader) ReadTagName() (typ byte, name string, err os.Error) {
 	return
 }
 
-func (r *NBTReader) ReadByteArray() (data []byte, err os.Error) {
+func (r *nbtReader) ReadByteArray() (data []byte, err os.Error) {
 	var l int
 	if l, err = r.ReadInt(); err != nil {
 		return
@@ -96,12 +96,12 @@ func (r *NBTReader) ReadByteArray() (data []byte, err os.Error) {
 }
 
 type SchematicReader struct {
-	r *NBTReader
+	r *nbtReader
 }
 
 func NewSchematicReader(r io.Reader) (sr *SchematicReader, err os.Error) {
-	var nr *NBTReader
-	if nr, err = NewNBTReader(r); err != nil {
+	var nr *nbtReader
+	if nr, err = newNbtReader(r); err != nil {
 		return
 	}
 	return &SchematicReader{r: nr}, nil
